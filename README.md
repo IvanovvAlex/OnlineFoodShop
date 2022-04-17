@@ -1,7 +1,5 @@
 # OnlineFoodShop
-ASP.NET Project - Online Food shop 
-
-https://socialmedia1.azurewebsites.net/ (Beta Version 1.0)
+ASP.NET Project 
 
 <p>Online Food shop application built for <a href="https://www.uni-ruse.bg/">ASP.NET Core course</a> at "Angel Kanchev" University of Ruse (Educational purposes)</p>
 
