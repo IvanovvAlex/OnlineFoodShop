@@ -1,3 +1,10 @@
-﻿@using OnlineFoodShop
+﻿@using Microsoft.AspNetCore.Identity
+@using OnlineFoodShop
+@using OnlineFoodShop.Data.Models
 @using OnlineFoodShop.Models
+@using System.Security.Claims
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
