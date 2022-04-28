@@ -22,28 +22,47 @@
             <table class="table table-hover table-striped text-center">
                 <thead>
                     <tr class="row">
-                        <th scope="col" class="col-lg-4">Name</th>
-                        <th scope="col" class="col-lg-4">Quantity</th>
-                        <th scope="col" class="col-lg-4">Price</th>
+                        <th scope="col" class="col-lg-5">Name</th>
+                        <th scope="col" class="col-lg-1"></th>
+                        <th scope="col" class="col-lg-1">Quantity</th>
+                        <th scope="col" class="col-lg-1">Price</th>
+                        <th scope="col" class="col-lg-1"></th>
+                        <th scope="col" class="col-lg-1"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var product in Model.MyProducts)
                     {
                         <tr class="row">
-                            <td class="col-lg-4">@product.Name</td>
+                            <td class="col-lg-5">@product.Name</td>
+                            <td class="col-lg-1">
+                                <div class="button-holder">
+                                    <a href="/Carts/IncreaseProduct/@product.Id" class="btn btn-outline-primary">+</a>
+                                </div>
+                            </td>
                             @if (product.Quantity >= 1)
                             {
-                                <th class="col-lg-4">@product.Quantity</th>
-                                <td class="col-lg-4">$@product.Price</td>
+                                <th class="col-lg-1">@product.Quantity</th>
+                                <td class="col-lg-1">$@product.Price</td>
                             }
+                            <td class="col-lg-1">
+                                <div class="button-holder">
+                                    <a href="/Carts/DecreaseProduct/@product.Id" class="btn btn-outline-primary">-</a>
+                                </div>
+                            </td>
+                            <td class="col-lg-1">
+                                <div class="button-holder">
+                                    <a href="/Carts/RemoveProductFromCart/@product.Id" class="btn btn-outline-primary">Remove</a>
+                                </div>
+                            </td>
                         </tr>
                     }
                 </tbody>
             </table>
             <h3 class="text-center">Total Cost: $@Model.TotalPrice</h3>
             <div class="button-holder text-center">
-                <a href="/Carts/Archive" class="btn btn-outline-primary">Back</a>
+                <a href="/Carts/Buy" class="btn btn-outline-primary">Buy</a>
+                <a href="/Carts/Cancel" class="btn btn-outline-primary">Cancel</a>
             </div>
         </div>
     </main>

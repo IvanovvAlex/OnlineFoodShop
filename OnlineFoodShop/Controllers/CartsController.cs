@@ -22,7 +22,7 @@ namespace OnlineFoodShop.Controllers
             this.productService = productService;
             this.userManager = userManager;
         }
-        public async Task<IActionResult> Details()
+        public async Task<IActionResult> MyCart()
         {
             ApplicationUser user = await userManager.GetUserAsync(User);
             MyCartViewModel model = await productService.GetMyProducts(user);
@@ -43,7 +43,33 @@ namespace OnlineFoodShop.Controllers
             return Redirect("/Home/IndexLoggedIn/");
         }
 
-        public async Task<IActionResult> RemoveProduct(string id)
+        public async Task<IActionResult> IncreaseProduct(string id)
+        {
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                bool isRemoved = await cartService.IncreaseProduct(id, userId);
+                if (isRemoved)
+                {
+                    TempData["AddedSuccessfully"] = "Done";
+                }
+            }
+            return Redirect("/Carts/MyCart");
+        }
+        public async Task<IActionResult> DecreaseProduct(string id)
+        {
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                bool isRemoved = await cartService.DecreaseProduct(id, userId);
+                if (isRemoved)
+                {
+                    TempData["RemovedFromCart"] = "Decreased";
+                }
+            }
+            return Redirect("/Carts/MyCart");
+        }
+        public async Task<IActionResult> RemoveProductFromCart(string id)
         {
             if (!string.IsNullOrWhiteSpace(id))
             {
@@ -54,14 +80,14 @@ namespace OnlineFoodShop.Controllers
                     TempData["RemovedFromCart"] = "Removed";
                 }
             }
-            return Redirect("/Carts/Details");
+            return Redirect("/Carts/MyCart");
         }
 
         public async Task<IActionResult> Buy()
         {
             ApplicationUser user = await userManager.GetUserAsync(User);
 
-            await cartService.CleanCart(user);
+            await cartService.ArchiveCart(user);
 
             TempData["Buy"] = "Done";
 
@@ -78,6 +104,22 @@ namespace OnlineFoodShop.Controllers
             TempData["Canceled"] = "Canceled";
 
             return Redirect("/Home/IndexLoggedIn");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Archive()
+        {
+            ICollection<CartViewModel> archivedCarts =  await cartService.GetArchive();
+
+            return View(archivedCarts);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Details(string id)
+        {
+             MyCartViewModel cart = await cartService.GetCartById(id);
+
+            return View(cart);
         }
     }
 }

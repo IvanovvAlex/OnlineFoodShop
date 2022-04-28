@@ -12,8 +12,8 @@ using OnlineFoodShop.Data;
 namespace OnlineFoodShop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220418170713_update1.0")]
-    partial class update10
+    [Migration("20220425174354_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -219,7 +219,8 @@ namespace OnlineFoodShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId");
+                    b.HasIndex("CartId")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -236,6 +237,17 @@ namespace OnlineFoodShop.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OrderDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -265,6 +277,9 @@ namespace OnlineFoodShop.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CartId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -274,6 +289,8 @@ namespace OnlineFoodShop.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CartId");
 
                     b.ToTable("Products");
                 });
@@ -332,8 +349,8 @@ namespace OnlineFoodShop.Migrations
             modelBuilder.Entity("OnlineFoodShop.Data.Models.ApplicationUser", b =>
                 {
                     b.HasOne("OnlineFoodShop.Data.Models.Cart", "Cart")
-                        .WithMany()
-                        .HasForeignKey("CartId")
+                        .WithOne("User")
+                        .HasForeignKey("OnlineFoodShop.Data.Models.ApplicationUser", "CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -343,7 +360,7 @@ namespace OnlineFoodShop.Migrations
             modelBuilder.Entity("OnlineFoodShop.Data.Models.CartProduct", b =>
                 {
                     b.HasOne("OnlineFoodShop.Data.Models.Cart", "Cart")
-                        .WithMany("Products")
+                        .WithMany("CardProducts")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -359,9 +376,21 @@ namespace OnlineFoodShop.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("OnlineFoodShop.Data.Models.Product", b =>
+                {
+                    b.HasOne("OnlineFoodShop.Data.Models.Cart", null)
+                        .WithMany("Products")
+                        .HasForeignKey("CartId");
+                });
+
             modelBuilder.Entity("OnlineFoodShop.Data.Models.Cart", b =>
                 {
+                    b.Navigation("CardProducts");
+
                     b.Navigation("Products");
+
+                    b.Navigation("User")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OnlineFoodShop.Data.Models.Product", b =>

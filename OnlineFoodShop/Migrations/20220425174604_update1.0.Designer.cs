@@ -12,8 +12,8 @@ using OnlineFoodShop.Data;
 namespace OnlineFoodShop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220418185040_update1.2")]
-    partial class update12
+    [Migration("20220425174604_update1.0")]
+    partial class update10
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -219,7 +219,8 @@ namespace OnlineFoodShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId");
+                    b.HasIndex("CartId")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -236,6 +237,16 @@ namespace OnlineFoodShop.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OrderDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -337,8 +348,8 @@ namespace OnlineFoodShop.Migrations
             modelBuilder.Entity("OnlineFoodShop.Data.Models.ApplicationUser", b =>
                 {
                     b.HasOne("OnlineFoodShop.Data.Models.Cart", "Cart")
-                        .WithMany()
-                        .HasForeignKey("CartId")
+                        .WithOne("User")
+                        .HasForeignKey("OnlineFoodShop.Data.Models.ApplicationUser", "CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -376,6 +387,9 @@ namespace OnlineFoodShop.Migrations
                     b.Navigation("CardProducts");
 
                     b.Navigation("Products");
+
+                    b.Navigation("User")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OnlineFoodShop.Data.Models.Product", b =>

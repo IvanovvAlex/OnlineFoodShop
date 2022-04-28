@@ -39,10 +39,10 @@ namespace OnlineFoodShop.Controllers
         [Authorize]
         public async Task<IActionResult> IndexLoggedIn()
         {
-            //var user = await userManager.GetUserAsync(HttpContext.User);
+            //var user = await usermanager.getuserasync(httpcontext.user);
 
-            //await roleService.CreateRole("Admin");
-            //await roleService.AddUserToRole(user, "Admin");
+            //await roleservice.createrole("admin");
+            //await roleservice.addusertorole(user, "admin");
             ICollection<ProductViewModel> allProducts = await productService.GetAll();
             return View(allProducts);
         }

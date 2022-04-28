@@ -12,8 +12,8 @@ using OnlineFoodShop.Data;
 namespace OnlineFoodShop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220418195001_update1.4")]
-    partial class update14
+    [Migration("20220428132451_update1.1")]
+    partial class update11
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -219,7 +219,8 @@ namespace OnlineFoodShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId");
+                    b.HasIndex("CartId")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -236,6 +237,16 @@ namespace OnlineFoodShop.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OrderDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -337,8 +348,8 @@ namespace OnlineFoodShop.Migrations
             modelBuilder.Entity("OnlineFoodShop.Data.Models.ApplicationUser", b =>
                 {
                     b.HasOne("OnlineFoodShop.Data.Models.Cart", "Cart")
-                        .WithMany()
-                        .HasForeignKey("CartId")
+                        .WithOne("User")
+                        .HasForeignKey("OnlineFoodShop.Data.Models.ApplicationUser", "CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -348,7 +359,7 @@ namespace OnlineFoodShop.Migrations
             modelBuilder.Entity("OnlineFoodShop.Data.Models.CartProduct", b =>
                 {
                     b.HasOne("OnlineFoodShop.Data.Models.Cart", "Cart")
-                        .WithMany("CardProducts")
+                        .WithMany("CartProducts")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -373,9 +384,12 @@ namespace OnlineFoodShop.Migrations
 
             modelBuilder.Entity("OnlineFoodShop.Data.Models.Cart", b =>
                 {
-                    b.Navigation("CardProducts");
+                    b.Navigation("CartProducts");
 
                     b.Navigation("Products");
+
+                    b.Navigation("User")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OnlineFoodShop.Data.Models.Product", b =>

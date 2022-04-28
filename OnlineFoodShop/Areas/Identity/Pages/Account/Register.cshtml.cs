@@ -113,7 +113,7 @@ namespace OnlineFoodShop.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            returnUrl ??= Url.Content("/Home/IndexLoggedIn/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
@@ -122,6 +122,8 @@ namespace OnlineFoodShop.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 Cart cart= new Cart();
+                cart.User = user;
+                cart.UserId = user.Id;
                 user.Cart = cart;
                 user.CartId = cart.Id;
                 var result = await _userManager.CreateAsync(user, Input.Password);
